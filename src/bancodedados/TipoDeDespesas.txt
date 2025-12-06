@@ -1,0 +1,4 @@
+1;IPVA
+2;Multas
+3;Manutenção
+4;Sucata
