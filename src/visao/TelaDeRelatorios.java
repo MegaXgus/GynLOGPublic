@@ -4,6 +4,15 @@
  */
 package visao;
 
+import controllers.MovimentacaoController;
+import controllers.TipoDeDespesasController;
+import controllers.VeiculoController;
+import javax.swing.JOptionPane;
+import modelos.classes.Movimentacao;
+import modelos.classes.TipoDeDespesa;
+import modelos.classes.Veiculo;
+import relatorios.PdfGerador;
+
 /**
  *
  * @author narut
@@ -33,6 +42,10 @@ public class TelaDeRelatorios extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jButtonRelatorioConfirmar = new javax.swing.JButton();
+        jButtonRelatorioControle = new javax.swing.JButton();
+        jButtonRelatorioMov = new javax.swing.JButton();
+        jButtonRelatorioDespesas = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
@@ -53,19 +66,67 @@ public class TelaDeRelatorios extends javax.swing.JFrame {
             }
         });
 
+        jButtonRelatorioConfirmar.setText("Confirmar");
+        jButtonRelatorioConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRelatorioConfirmarActionPerformed(evt);
+            }
+        });
+
+        jButtonRelatorioControle.setText("Gerar Relatorio Controle");
+        jButtonRelatorioControle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRelatorioControleActionPerformed(evt);
+            }
+        });
+
+        jButtonRelatorioMov.setText("Gerar Relatorio Movimentação");
+        jButtonRelatorioMov.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRelatorioMovActionPerformed(evt);
+            }
+        });
+
+        jButtonRelatorioDespesas.setText("Gerar Relatorio Despesas");
+        jButtonRelatorioDespesas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRelatorioDespesasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(844, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addComponent(jButtonRelatorioControle, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(jButtonRelatorioMov, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56)
+                        .addComponent(jButtonRelatorioDespesas, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(416, 416, 416)
+                        .addComponent(jButtonRelatorioConfirmar)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(490, Short.MAX_VALUE)
+                .addGap(43, 43, 43)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonRelatorioControle, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonRelatorioMov, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonRelatorioDespesas, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(95, 95, 95)
+                .addComponent(jButtonRelatorioConfirmar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 248, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(45, 45, 45))
         );
@@ -141,6 +202,107 @@ public class TelaDeRelatorios extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButtonRelatorioConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRelatorioConfirmarActionPerformed
+        List<String> linhas = new ArrayList<>();
+
+    linhas.add("=== Veículos ===");
+    for (Veiculo v : VeiculoController.getInstance().listarVeiculos()) {
+        linhas.add(v.toString());
+    }
+
+    linhas.add("\n=== Movimentações ===");
+    for (Movimentacao m : MovimentacaoController.getInstance().listarMovimentacoes()) {
+        linhas.add(m.toString());
+    }
+
+    linhas.add("\n=== Tipos de Despesas ===");
+    for (TipoDeDespesa t : TipoDeDespesasController.getInstance().listarTipoDespesas()) {
+        linhas.add(t.toString());
+    }
+
+    PdfGerador.gerarRelatorio(
+        "Relatório Geral",
+        linhas,
+        "relatorio_geral.pdf"
+    );
+
+    JOptionPane.showMessageDialog(this, "Relatório geral gerado: relatorio_geral.pdf");
+    }//GEN-LAST:event_jButtonRelatorioConfirmarActionPerformed
+
+    private void jButtonRelatorioControleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRelatorioControleActionPerformed
+    List<Veiculo> lista = VeiculoController.getInstance().listarVeiculos();
+
+    // formtacao padrao para o pdf
+    List<String> linhas = new ArrayList<>();
+    for (Veiculo v : lista) {
+        linhas.add(
+            "ID: " + v.getIdVeiculo() +
+            " | Placa: " + v.getPlaca() +
+            " | Marca: " + v.getMarca() +
+            " | Modelo: " + v.getModelo() +
+            " | Ano: " + v.getAnoFabricacao() +
+            " | Status: " + (v.isAtivo() ? "Ativo" : "Inativo")
+        );
+    }
+
+    // gerando pdf 
+    PdfGerador.gerarRelatorio(
+        "Relatório de Veículos",
+        linhas,
+        "rel_veiculos.pdf"
+    );
+
+    JOptionPane.showMessageDialog(this, "Relatório gerado: relatorio_veiculos.pdf");
+}    
+    }//GEN-LAST:event_jButtonRelatorioControleActionPerformed
+
+    private void jButtonRelatorioMovActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRelatorioMovActionPerformed
+    List<Movimentacao> lista = MovimentacaoController.getInstance().listarMovimentacoes();
+
+    List<String> linhas = new ArrayList<>();
+
+    for (Movimentacao m : lista) {
+        linhas.add(
+            "ID Mov: " + m.getIdMovimentacao() +
+            " | Veículo ID: " + m.getIdVeiculo() +
+            " | Tipo: " + m.getIdTipoDespesa() +
+            " | Desc: " + m.getDescricao() +
+            " | Data: " + m.getData() +
+            " | Valor: R$ " + m.getValor()
+        );
+    }
+
+    PdfGerador.gerarRelatorio(
+        "Relatório de Movimentações",
+        linhas,
+        "relatorio_movimentacoes.pdf"
+    );
+
+    JOptionPane.showMessageDialog(this, "Relatório gerado: relatorio_movimentacoes.pdf");
+
+    }//GEN-LAST:event_jButtonRelatorioMovActionPerformed
+
+    private void jButtonRelatorioDespesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRelatorioDespesasActionPerformed
+    List<TipoDeDespesa> lista = TipoDeDespesasController.getInstance().listarTipoDespesas();
+
+    List<String> linhas = new ArrayList<>();
+
+    for (TipoDeDespesa t : lista) {
+        linhas.add(
+            "ID Tipo: " + t.getIdTipoDeDespesa() +
+            " | Descrição: " + t.getDescricao()
+        );
+    }
+
+    PdfGerador.gerarRelatorio(
+        "Relatório de Tipos de Despesas",
+        linhas,
+        "relatorio_tipo_despesas.pdf"
+    );
+
+    JOptionPane.showMessageDialog(this, "Relatório gerado: relatorio_tipo_despesas.pdf");
+    }//GEN-LAST:event_jButtonRelatorioDespesasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -168,6 +330,10 @@ public class TelaDeRelatorios extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonRelatorioConfirmar;
+    private javax.swing.JButton jButtonRelatorioControle;
+    private javax.swing.JButton jButtonRelatorioDespesas;
+    private javax.swing.JButton jButtonRelatorioMov;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
